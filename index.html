@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0d1622">
+  <meta name="description" content="Bitácora Gym: planes de entrenamiento editables, catálogo de ejercicios, cardio, fuerza e historial con respaldos.">
+  <meta name="color-scheme" content="dark">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Bitácora Gym · Planes y entrenamientos</title>
+</head>
+<body>
+  <div class="app-shell">
+    <main id="app" aria-live="polite"><div class="panel">Abriendo Bitácora Gym…</div></main>
+    <nav class="bottom-nav" id="bottomNav" aria-label="Secciones principales"></nav>
+  </div>
+  <input id="backupFile" type="file" accept=".json,application/json" hidden>
+  <input id="planFile" type="file" accept=".json,application/json" hidden>
+  <input id="pdfFile" type="file" accept="application/pdf,.pdf" hidden>
+  <input id="imageFile" type="file" accept="image/*" hidden>
+  <div id="toast" role="status" aria-live="polite" class="toast hide"></div>
+  <script src="catalog.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
