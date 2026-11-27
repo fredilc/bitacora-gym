@@ -87,41 +87,59 @@
       const onDay=entries().filter(s=>date(s)===selected);
       return `<section class="bg-box"><div class="bg-flex"><div><span class="bg-eyebrow">Días de actividad</span><h2>Calendario</h2></div><span class="bg-subtle">${stats().days.size} días</span></div><div class="bg-month"><button type="button" data-bg="prev" aria-label="Mes anterior">‹</button><strong>${esc(title)}</strong><button type="button" data-bg="next" aria-label="Mes siguiente">›</button></div><div class="bg-calendar-grid bg-weekdays">${['L','M','M','J','V','S','D'].map(v=>`<span>${v}</span>`).join('')}</div><div class="bg-calendar-grid">${cells}</div><p class="bg-subtle">✓ Día registrado al pulsar «Finalizar y ver resumen».</p>${selected?`<div class="bg-calendar-detail"><strong>${selected}</strong>: ${onDay.length?`${onDay.length} sesión(es): ${onDay.map(s=>esc(s.daySnapshot?.title||'Entrenamiento')).join(', ')}`:'Sin sesiones finalizadas'}</div>`:''}</section>`;
     }
-    function coach(){
-  const name=String(S.profile?.name||'').trim().split(/\s+/)[0]||'';
-  const last=entries()[0];
-  const d=new Date();
-  const today=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  let pose='welcome',message='';
-  if(S.active){
-    pose='train';message='¡Tú marcas el ritmo! Cuida la técnica y disfruta cada serie.';
-  }else if(last&&date(last)===today){
-    pose='achieve';message='¡Sesión completada! Hidrátate y date tiempo para recuperarte.';
-  }else if(!entries().length){
-    message='¡Buen momento para empezar! Un entrenamiento a la vez.';
-  }else{
-    const tips=[
-      {pose:'welcome',message:'¡Qué gusto verte! Tu constancia se construye paso a paso.'},
-      {pose:'train',message:'¿Listo para una nueva sesión? ¡Vamos con buena técnica!'},
-      {pose:'hydrate',message:'No olvides hidratarte. Recuperarte también es progresar.'},
-      {pose:'welcome',message:'Tu siguiente sesión puede ser tan buena como tú decidas.'}
+    const coachMessages = [
+      {pose:'train',message:'¡Vamos con todo! Cada repetición bien hecha suma.'},
+      {pose:'welcome',message:'Lo importante es avanzar a tu ritmo. ¡Aquí estoy contigo!'},
+      {pose:'train',message:'Calidad antes que cantidad: cuida tu técnica.'},
+      {pose:'achieve',message:'¡Reconoce tu esfuerzo! Cada sesión cuenta.'},
+      {pose:'hydrate',message:'Escucha a tu cuerpo: hidrátate y descansa cuando lo necesites.'},
+      {pose:'welcome',message:'¡Qué gusto verte! Hoy tenemos otra oportunidad de mejorar.'},
+      {pose:'train',message:'Un paso a la vez. Concéntrate en el ejercicio de hoy.'},
+      {pose:'achieve',message:'¡Vas construyendo un gran hábito! Sigue disfrutando el proceso.'},
+      {pose:'welcome',message:'No tienes que superarte todos los días. La constancia también es descansar.'},
+      {pose:'train',message:'Respira, controla el movimiento y confía en tu preparación.'},
+      {pose:'hydrate',message:'Tu recuperación es parte del progreso. ¡No la olvides!'},
+      {pose:'achieve',message:'¡Buen trabajo volviendo! La disciplina se construye con paciencia.'},
+      {pose:'welcome',message:'Hoy no compites contra nadie: entrenas para sentirte mejor.'},
+      {pose:'train',message:'¡Tú marcas el ritmo! KIRO te acompaña.'}
     ];
-    ({pose,message}=tips[d.getDate()%tips.length]);
-  }
-  return `<section class="bg-box bg-coach kiro-coach">
-    <div class="kiro-portrait">
-      ${kiroPose(pose,'KIRO, robot entrenador saludando y motivándote')}
-      <span class="kiro-label">KIRO</span>
-    </div>
-    <div class="kiro-copy">
-      <span class="bg-eyebrow">TU MINI COACH</span>
-      <h2>¡Hola${name?', '+esc(name):''}!</h2>
-      <p>${esc(message)}</p>
-      <button type="button" class="bg-small-btn" data-bg="logros">Explorar mis Logros →</button>
-    </div>
-  </section>`;
-}
-    function logrosPreview(){
+    let lastCoachMessageIndex=-1;
+    function nextCoachMessage(){
+      const messages = coachMessages.slice();
+      if(S.settings?.reminders && S.settings?.hydration){
+        messages.push({pose:'hydrate',message:String(S.settings.hydration).trim()});
+      }
+      if(!messages.length)return;
+      let index=Math.floor(Math.random()*messages.length);
+      if(messages.length>1 && index===lastCoachMessageIndex)
+        index=(index+1+Math.floor(Math.random()*(messages.length-1)))%messages.length;
+      lastCoachMessageIndex=index;
+      const card=document.getElementById('kiro-card');
+      if(!card)return;
+      const text=card.querySelector('#kiro-message');
+      const figure=card.querySelector('.kiro-trigger .kiro-figure');
+      if(text)text.textContent=messages[index].message;
+      if(figure){
+        figure.classList.remove('kiro-welcome','kiro-train','kiro-achieve','kiro-hydrate');
+        figure.classList.add('kiro-'+messages[index].pose);
+      }
+    }
+    function coach(){
+      const name=String(S.profile?.name||'').trim().split(/\s+/)[0]||'';
+      return `<section id="kiro-card" class="bg-box bg-coach kiro-coach">
+        <button type="button" class="kiro-portrait kiro-trigger" data-bg="kiroMessage" aria-label="Recibir un mensaje nuevo de KIRO" aria-controls="kiro-message" title="Toca a KIRO">
+          ${kiroPose('welcome','KIRO, tu Mini Coach')}
+          <span class="kiro-label">KIRO</span>
+        </button>
+        <div class="kiro-copy">
+          <span class="bg-eyebrow">TU MINI COACH</span>
+          <h2>¡Hola${name?', '+esc(name):''}!</h2>
+          <p id="kiro-message" class="kiro-speech" aria-live="polite" aria-atomic="true">¡Tócame y te compartiré un mensaje!</p>
+          <span class="kiro-tap-hint">Toca a KIRO para otro consejo.</span>
+        </div>
+      </section>`;
+    }
+        function logrosPreview(){
       const earned=new Set(unlocked().map(x=>x.id));
       return `<section class="bg-box"><div class="bg-flex"><h2>🏆 Mis Logros</h2><span class="bg-subtle">${earned.size}/12</span></div><div class="bg-preview">${catalog.slice(0,6).map(c=>`<span class="${earned.has(c.id)?'':'bg-locked'}">${stickerImg(c.id)}</span>`).join('')}</div><button type="button" class="btn outline block" data-bg="logros">Ver insignias y stickers</button></section>`;
     }
@@ -142,11 +160,11 @@
     function enhance(){
       const app=document.getElementById('app');if(!app)return;
       if(lastRenderedScreen!==ui.screen){if(ui.screen==='history')historyCalendarVisible=false;lastRenderedScreen=ui.screen;}
-      const version=app.querySelector('.subbrand');if(version)version.textContent='Planes editables · Versión 0.4.3';
+      const version=app.querySelector('.subbrand');if(version)version.textContent='Planes editables · Versión 0.4.4';
       if(ui.screen==='logros'){app.innerHTML=topbar()+logrosPage();app.querySelector('.title-block')?.insertAdjacentHTML('afterend',logrosGreeting());document.title='Mis Logros · Bitácora Gym';return}
       const title=app.querySelector('.title-block');
-      if(ui.screen==='home'&&title)title.insertAdjacentHTML('afterend',coach()+logrosPreview());
-      else if(ui.screen==='history'&&title)title.insertAdjacentHTML('afterend',`<div class="bg-calendar-control"><button class="btn block" type="button" data-bg="toggleCalendar" aria-expanded="${historyCalendarVisible}" aria-controls="bg-calendar-region">${historyCalendarVisible?'Ocultar calendario':'Ver calendario'}</button></div><div id="bg-calendar-region">${historyCalendarVisible?calendar():''}</div>`);
+      if(ui.screen==='home'&&title)title.insertAdjacentHTML('afterend',coach());
+      else if(ui.screen==='history'&&title)title.insertAdjacentHTML('afterend',logrosPreview()+`<div class="bg-calendar-control"><button class="btn block" type="button" data-bg="toggleCalendar" aria-expanded="${historyCalendarVisible}" aria-controls="bg-calendar-region">${historyCalendarVisible?'Ocultar calendario':'Ver calendario'}</button></div><div id="bg-calendar-region">${historyCalendarVisible?calendar():''}</div>`);
       else if(ui.screen==='summary'&&title)title.insertAdjacentHTML('afterend',summaryCoach());
       else if(ui.screen==='settings')app.insertAdjacentHTML('beforeend',deletePanel());
       else if(ui.screen==='profile')app.querySelector('#profileForm')?.insertAdjacentHTML('afterend',deletePanel());
@@ -182,7 +200,8 @@
     document.addEventListener('click',e=>{
       const btn=e.target.closest('button[data-bg]');if(!btn||btn.disabled)return;
       const action=btn.dataset.bg;
-      if(action==='logros')go('logros');
+      if(action==='kiroMessage')nextCoachMessage();
+      else if(action==='logros')go('logros');
       else if(action==='toggleCalendar'){historyCalendarVisible=!historyCalendarVisible;selected='';render();}
       else if(action==='home')go('home');
       else if(action==='prev'||action==='next'){month.setMonth(month.getMonth()+(action==='prev'?-1:1));selected='';render()}
