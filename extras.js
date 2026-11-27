@@ -31,6 +31,19 @@
     const date=s=>/^\d{4}-\d{2}-\d{2}$/.test(String(s?.date||''))?s.date:null;
     const sticker=id=>`./stickers/${id}.svg`;
     const stickerImg=(id,cl='')=>`<img src="${sticker(id)}" alt="" class="${cl}" loading="lazy">`;
+    function kiroPose(pose='welcome',label='KIRO, tu Mini Coach'){
+  const allowed=['welcome','train','achieve','hydrate'];
+  const state=allowed.includes(pose)?pose:'welcome';
+  return `<span class="kiro-figure kiro-${state}" role="img" aria-label="${esc(label)}"></span>`;
+}
+    function logrosGreeting(){
+  const total=unlocked().length;
+  const message=total?`¡Llevas ${total} sticker${total===1?'':'s'} desbloqueado${total===1?'':'s'}! Sigue sumando a tu ritmo.`:'¡Los primeros logros están por llegar! Cada entrenamiento cuenta.';
+  return `<section class="bg-box kiro-feature">
+    <div class="kiro-feature-image">${kiroPose('achieve','KIRO celebrando tus logros')}</div>
+    <div><span class="bg-eyebrow">KIRO CELEBRA CONTIGO</span><h2>¡Tú lo haces posible!</h2><p>${esc(message)}</p></div>
+  </section>`;
+}
     let month=new Date();month.setDate(1);
     let selected='', newlyUnlocked=[];
     const monday=d=>{
@@ -75,14 +88,39 @@
       return `<section class="bg-box"><div class="bg-flex"><div><span class="bg-eyebrow">Días de actividad</span><h2>Calendario</h2></div><span class="bg-subtle">${stats().days.size} días</span></div><div class="bg-month"><button type="button" data-bg="prev" aria-label="Mes anterior">‹</button><strong>${esc(title)}</strong><button type="button" data-bg="next" aria-label="Mes siguiente">›</button></div><div class="bg-calendar-grid bg-weekdays">${['L','M','M','J','V','S','D'].map(v=>`<span>${v}</span>`).join('')}</div><div class="bg-calendar-grid">${cells}</div><p class="bg-subtle">✓ Día registrado al pulsar «Finalizar y ver resumen».</p>${selected?`<div class="bg-calendar-detail"><strong>${selected}</strong>: ${onDay.length?`${onDay.length} sesión(es): ${onDay.map(s=>esc(s.daySnapshot?.title||'Entrenamiento')).join(', ')}`:'Sin sesiones finalizadas'}</div>`:''}</section>`;
     }
     function coach(){
-      const name=String(S.profile?.name||'').trim().split(/\s+/)[0]||'campeón',last=entries()[0];
-      let message;
-      if(S.active)message='¡Vamos paso a paso! Buena técnica y control.';
-      else if(last&&date(last)===new Date().toLocaleDateString('en-CA'))message='¡Buen trabajo! Hoy ya entrenaste. Descansar también cuenta.';
-      else if(!entries().length)message='¡Hoy puede ser tu primer gran paso!';
-      else message=['Un ejercicio a la vez. ¡Tú puedes!','Tu constancia construye resultados.','¡Qué gusto verte! Vamos a tu ritmo.','Recuerda hidratarte y escuchar a tu cuerpo.'][new Date().getDate()%4];
-      return `<section class="bg-box bg-coach">${stickerImg('01')}<div><span class="bg-eyebrow">Tu Mini Coach</span><h2>¡Hola, ${esc(name)}! 👋</h2><p>${esc(message)}</p><button type="button" class="bg-small-btn" data-bg="logros">Ver mis Logros →</button></div></section>`;
-    }
+  const name=String(S.profile?.name||'').trim().split(/\s+/)[0]||'';
+  const last=entries()[0];
+  const d=new Date();
+  const today=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  let pose='welcome',message='';
+  if(S.active){
+    pose='train';message='¡Tú marcas el ritmo! Cuida la técnica y disfruta cada serie.';
+  }else if(last&&date(last)===today){
+    pose='achieve';message='¡Sesión completada! Hidrátate y date tiempo para recuperarte.';
+  }else if(!entries().length){
+    message='¡Buen momento para empezar! Un entrenamiento a la vez.';
+  }else{
+    const tips=[
+      {pose:'welcome',message:'¡Qué gusto verte! Tu constancia se construye paso a paso.'},
+      {pose:'train',message:'¿Listo para una nueva sesión? ¡Vamos con buena técnica!'},
+      {pose:'hydrate',message:'No olvides hidratarte. Recuperarte también es progresar.'},
+      {pose:'welcome',message:'Tu siguiente sesión puede ser tan buena como tú decidas.'}
+    ];
+    ({pose,message}=tips[d.getDate()%tips.length]);
+  }
+  return `<section class="bg-box bg-coach kiro-coach">
+    <div class="kiro-portrait">
+      ${kiroPose(pose,'KIRO, robot entrenador saludando y motivándote')}
+      <span class="kiro-label">KIRO</span>
+    </div>
+    <div class="kiro-copy">
+      <span class="bg-eyebrow">TU MINI COACH</span>
+      <h2>¡Hola${name?', '+esc(name):''}!</h2>
+      <p>${esc(message)}</p>
+      <button type="button" class="bg-small-btn" data-bg="logros">Explorar mis Logros →</button>
+    </div>
+  </section>`;
+}
     function logrosPreview(){
       const earned=new Set(unlocked().map(x=>x.id));
       return `<section class="bg-box"><div class="bg-flex"><h2>🏆 Mis Logros</h2><span class="bg-subtle">${earned.size}/12</span></div><div class="bg-preview">${catalog.slice(0,6).map(c=>`<span class="${earned.has(c.id)?'':'bg-locked'}">${stickerImg(c.id)}</span>`).join('')}</div><button type="button" class="btn outline block" data-bg="logros">Ver insignias y stickers</button></section>`;
@@ -92,11 +130,19 @@
       return `<div class="title-block"><div class="kicker">Tu colección</div><h1>🏆 Mis Logros</h1><p>Personajes divertidos que se desbloquean con tu progreso. Los días de descanso no rompen tus logros.</p></div><section class="bg-box"><div class="bg-flex"><h2>Insignias</h2><span class="bg-subtle">${badges.filter(b=>progress(b,data)>=b.target).length}/6</span></div><div class="bg-badges">${badges.map(b=>`<div class="bg-badge ${progress(b,data)>=b.target?'':'locked'}"><span>${b.icon}</span><strong>${esc(b.name)}</strong><small>${Math.min(progress(b,data),b.target)}/${b.target}</small></div>`).join('')}</div></section><section class="bg-box"><div class="bg-flex"><h2>Stickers de Logros</h2><span class="bg-subtle">${earned.size}/12</span></div><div class="bg-progress"><span style="width:${earned.size/12*100}%"></span></div>${['Primeros pasos','Constancia','Especiales'].map(group=>`<h3>${group}</h3><div class="bg-sticker-grid">${catalog.filter(c=>c.group===group).map(c=>{const ok=earned.has(c.id);return `<div class="bg-sticker ${ok?'':'locked'}">${stickerImg(c.id)}<b>${esc(c.name)}</b><small>${esc(c.detail)}</small><span class="bg-subtle">${ok?'✓ Desbloqueado':Math.min(progress(c,data),c.target)+'/'+c.target}</span>${ok?`<button data-bg="share" data-id="${c.id}" type="button">Compartir sticker</button>`:''}</div>`}).join('')}</div>`).join('')}</section><button class="btn block" type="button" data-bg="home">Volver al inicio</button>`;
     }
     function deletePanel(){return `<section class="bg-box bg-danger"><h2>Eliminar historial</h2><p>Borra las sesiones finalizadas, las marcas del calendario y los logros, pero conserva tu perfil, tus planes y una sesión en curso. Se requerirán dos confirmaciones.</p><button type="button" class="bg-danger-btn" data-bg="delete">🗑 Eliminar historial de entrenamientos</button></section>`}
-    function summaryCoach(){return `<section class="bg-box"><h2>Tu Mini Coach</h2><div class="bg-summary-coach">${stickerImg('01')}<p>¡Excelente sesión! Recupérate, hidrátate y celebra tu avance.</p></div>${newlyUnlocked.length?`<h3>🎉 Nuevos Logros</h3><div class="bg-preview">${newlyUnlocked.map(c=>stickerImg(c.id)).join('')}</div><button type="button" class="btn block" data-bg="logros">Ver mis Logros</button>`:''}</section>`}
+    function summaryCoach(){
+  return `<section class="bg-box kiro-summary">
+    <div class="kiro-summary-heading">
+      ${kiroPose('achieve','KIRO celebrando tu entrenamiento completado')}
+      <div><span class="bg-eyebrow">KIRO · TU MINI COACH</span><h2>¡Entrenamiento completado!</h2><p>¡Excelente trabajo! Cuida tu recuperación y celebra el esfuerzo.</p></div>
+    </div>
+    ${newlyUnlocked.length?`<h3>✨ Nuevos Logros desbloqueados</h3><div class="bg-preview">${newlyUnlocked.map(c=>stickerImg(c.id)).join('')}</div><button type="button" class="btn block" data-bg="logros">Ver mis Logros</button>`:''}
+  </section>`;
+}
     function enhance(){
       const app=document.getElementById('app');if(!app)return;
-      const version=app.querySelector('.subbrand');if(version)version.textContent='Planes editables · Versión 0.4';
-      if(ui.screen==='logros'){app.innerHTML=topbar()+logrosPage();document.title='Mis Logros · Bitácora Gym';return}
+      const version=app.querySelector('.subbrand');if(version)version.textContent='Planes editables · Versión 0.4.2';
+      if(ui.screen==='logros'){app.innerHTML=topbar()+logrosPage();app.querySelector('.title-block')?.insertAdjacentHTML('afterend',logrosGreeting());document.title='Mis Logros · Bitácora Gym';return}
       const title=app.querySelector('.title-block');
       if(ui.screen==='home'&&title)title.insertAdjacentHTML('afterend',coach()+calendar()+logrosPreview());
       else if(ui.screen==='history'&&title)title.insertAdjacentHTML('afterend',calendar());

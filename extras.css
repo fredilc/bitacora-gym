@@ -49,3 +49,60 @@
 .bg-summary-coach{display:flex;gap:10px;align-items:center}.bg-summary-coach img{width:76px}
 @media(min-width:620px){.bg-sticker-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media(max-width:355px){.bg-box{padding:12px}.bg-coach img{height:83px;width:80px;flex-basis:80px}.bg-badges{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+
+/* KIRO 0.4.2 — estética tecnológica premium, cuatro expresiones originales */
+.kiro-figure{
+  display:block;
+  width:112px;height:112px;
+  background-image:url('./kiro/poses.webp');
+  background-size:200% 200%;
+  background-repeat:no-repeat;
+  background-position:0 0;
+  filter:drop-shadow(0 7px 11px rgba(0,8,20,.36));
+  flex-shrink:0;
+}
+.kiro-figure.kiro-train{background-position:100% 0}
+.kiro-figure.kiro-achieve{background-position:0 100%}
+.kiro-figure.kiro-hydrate{background-position:100% 100%}
+.kiro-coach{
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#142d42,#102b33 62%,#153d42);
+  border:1px solid #336d77;
+  box-shadow:0 10px 26px rgba(1,9,26,.24),inset 0 1px rgba(148,241,236,.12);
+}
+.kiro-portrait{
+  display:flex;flex:0 0 124px;flex-direction:column;align-items:center;justify-content:center;
+  min-width:0;min-height:124px;border-radius:18px;
+  background:radial-gradient(ellipse at 50% 49%,#175f66,#122d40 74%);
+  border:1px solid rgba(100,221,224,.19);
+}
+.kiro-portrait .kiro-figure{width:108px;height:108px}
+.kiro-label{
+  font-size:.69rem;font-weight:900;letter-spacing:.2em;line-height:1;
+  color:#b2faf1;margin-top:0;text-shadow:0 0 12px #44eee57a;
+}
+.kiro-copy{flex:1;min-width:0}
+.kiro-copy h2{font-size:1.15rem;letter-spacing:-.02em;color:#fff;margin:4px 0 5px}
+.kiro-copy p{margin:5px 0 10px;line-height:1.45;color:#dbedf4}
+.kiro-copy .bg-small-btn{color:#9bf7ed}
+.kiro-feature{display:flex;align-items:center;gap:12px;background:linear-gradient(125deg,#162d43,#14393e);border-color:#386d74}
+.kiro-feature-image{
+  display:flex;align-items:center;justify-content:center;flex:0 0 100px;width:100px;height:100px;
+  border-radius:16px;background:radial-gradient(circle,#2b7270,#1b3546);
+}
+.kiro-feature .kiro-figure{width:93px;height:93px}
+.kiro-feature h2{font-size:1.06rem}.kiro-feature p{margin:5px 0;font-size:.83rem}
+.kiro-summary{border-color:#4e9396;background:linear-gradient(125deg,#123a43,#152b43)}
+.kiro-summary-heading{display:flex;gap:12px;align-items:center}
+.kiro-summary-heading>.kiro-figure{width:106px;height:106px}
+.kiro-summary-heading h2{margin:5px 0}.kiro-summary-heading p{margin:7px 0;font-size:.86rem}
+@media(max-width:390px){
+  .kiro-coach{gap:9px;padding:12px}
+  .kiro-portrait{flex-basis:95px;min-height:103px}
+  .kiro-portrait .kiro-figure{width:91px;height:91px}
+  .kiro-copy h2{font-size:1.05rem}
+  .kiro-copy p{font-size:.81rem}
+  .kiro-feature-image{flex-basis:83px;width:83px;height:83px}
+  .kiro-feature .kiro-figure{width:80px;height:80px}
+}

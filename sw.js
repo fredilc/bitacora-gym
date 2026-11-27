@@ -1,8 +1,8 @@
 /* Bitácora Gym 0.4.1 — arranque offline-first y recuperación de red. */
-const CACHE='bitacora-gym-v041-offline';
+const CACHE='bitacora-gym-v042-kiro';
 const CORE=[
   './','./index.html','./styles.css','./extras.css','./catalog.js','./app.js',
-  './extras.js','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png',
+  './extras.js','./kiro/poses.webp','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png',
   ...Array.from({length:12},(_,i)=>'./stickers/'+String(i+1).padStart(2,'0')+'.svg')
 ];
 
