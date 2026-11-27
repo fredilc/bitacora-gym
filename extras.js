@@ -29,8 +29,8 @@
     ];
     const entries=()=>Array.isArray(S.history)?S.history:[];
     const date=s=>/^\d{4}-\d{2}-\d{2}$/.test(String(s?.date||''))?s.date:null;
-    const sticker=id=>`./stickers/${id}.svg`;
-    const stickerImg=(id,cl='')=>`<img src="${sticker(id)}" alt="" class="${cl}" loading="lazy">`;
+    const sticker=id=>id==='01'?'./kiro/poses.webp':`./stickers/${id}.svg`;
+    const stickerImg=(id,cl='')=>id==='01'?`<span class="kiro-figure kiro-welcome kiro-sticker ${cl}" role="img" aria-label="¡Despegamos! KIRO celebra tu primer entrenamiento"></span>`:`<img src="${sticker(id)}" alt="" class="${cl}" loading="lazy">`;
     function kiroPose(pose='welcome',label='KIRO, tu Mini Coach'){
   const allowed=['welcome','train','achieve','hydrate'];
   const state=allowed.includes(pose)?pose:'welcome';
@@ -45,7 +45,7 @@
   </section>`;
 }
     let month=new Date();month.setDate(1);
-    let selected='', newlyUnlocked=[];
+    let selected='', newlyUnlocked=[], historyCalendarVisible=false, lastRenderedScreen=null;
     const monday=d=>{
       const v=new Date(`${d}T12:00:00Z`); if(Number.isNaN(v.getTime()))return NaN;
       v.setUTCDate(v.getUTCDate()-(v.getUTCDay()+6)%7);v.setUTCHours(0,0,0,0);return v.getTime();
@@ -141,11 +141,12 @@
 }
     function enhance(){
       const app=document.getElementById('app');if(!app)return;
-      const version=app.querySelector('.subbrand');if(version)version.textContent='Planes editables · Versión 0.4.2';
+      if(lastRenderedScreen!==ui.screen){if(ui.screen==='history')historyCalendarVisible=false;lastRenderedScreen=ui.screen;}
+      const version=app.querySelector('.subbrand');if(version)version.textContent='Planes editables · Versión 0.4.3';
       if(ui.screen==='logros'){app.innerHTML=topbar()+logrosPage();app.querySelector('.title-block')?.insertAdjacentHTML('afterend',logrosGreeting());document.title='Mis Logros · Bitácora Gym';return}
       const title=app.querySelector('.title-block');
-      if(ui.screen==='home'&&title)title.insertAdjacentHTML('afterend',coach()+calendar()+logrosPreview());
-      else if(ui.screen==='history'&&title)title.insertAdjacentHTML('afterend',calendar());
+      if(ui.screen==='home'&&title)title.insertAdjacentHTML('afterend',coach()+logrosPreview());
+      else if(ui.screen==='history'&&title)title.insertAdjacentHTML('afterend',`<div class="bg-calendar-control"><button class="btn block" type="button" data-bg="toggleCalendar" aria-expanded="${historyCalendarVisible}" aria-controls="bg-calendar-region">${historyCalendarVisible?'Ocultar calendario':'Ver calendario'}</button></div><div id="bg-calendar-region">${historyCalendarVisible?calendar():''}</div>`);
       else if(ui.screen==='summary'&&title)title.insertAdjacentHTML('afterend',summaryCoach());
       else if(ui.screen==='settings')app.insertAdjacentHTML('beforeend',deletePanel());
       else if(ui.screen==='profile')app.querySelector('#profileForm')?.insertAdjacentHTML('afterend',deletePanel());
@@ -168,7 +169,7 @@
         const img=new Image();img.crossOrigin='anonymous';img.src=sticker(id);
         await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject});
         const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;
-        const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,512,512);
+        const ctx=canvas.getContext('2d');if(id==='01'){const w=img.naturalWidth/2,h=img.naturalHeight/2;ctx.drawImage(img,0,0,w,h,0,0,512,512)}else ctx.drawImage(img,0,0,512,512);
         const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
         if(!blob)throw Error('No se pudo generar PNG');
         const file=new File([blob],`bitacora-gym-logro-${id}.png`,{type:'image/png'});
@@ -182,6 +183,7 @@
       const btn=e.target.closest('button[data-bg]');if(!btn||btn.disabled)return;
       const action=btn.dataset.bg;
       if(action==='logros')go('logros');
+      else if(action==='toggleCalendar'){historyCalendarVisible=!historyCalendarVisible;selected='';render();}
       else if(action==='home')go('home');
       else if(action==='prev'||action==='next'){month.setMonth(month.getMonth()+(action==='prev'?-1:1));selected='';render()}
       else if(action==='date'){selected=btn.dataset.date;render()}
