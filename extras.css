@@ -1,0 +1,51 @@
+
+/* Bitácora Gym 0.4 — calendario, Mini Coach, insignias y stickers */
+.bg-box{margin:16px 0;padding:17px;border:1px solid #385367;border-radius:18px;background:#172738;color:#ecf6f8}
+.bg-box h2{margin:0 0 8px;font-size:1.13rem;color:#f1fcff}
+.bg-box p{line-height:1.5;font-size:.86rem;color:#d4e1e9}
+.bg-flex{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bg-eyebrow{display:block;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:800;color:#90eac4;margin-bottom:5px}
+.bg-subtle{font-size:.76rem;color:#b6cbd5}
+.bg-coach{display:flex;align-items:center;gap:12px;background:linear-gradient(120deg,#17443d,#18334a);border-color:#3c7168}
+.bg-coach img{height:100px;width:95px;flex:0 0 95px;object-fit:contain}
+.bg-coach h2{font-size:1.17rem}.bg-coach p{margin:4px 0 10px}
+.bg-small-btn{color:#9dffd6;font-size:.84rem;font-weight:700;border:0;background:none;padding:4px 0;text-align:left;cursor:pointer}
+.bg-month{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:13px 0}
+.bg-month button{width:40px;height:40px;font-size:1.6rem;color:#f2faff;background:#243c50;border:1px solid #4a6878;border-radius:11px;cursor:pointer}
+.bg-month strong{font-size:.98rem;text-transform:capitalize}
+.bg-calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.bg-weekdays{text-align:center;font-size:.75rem;font-weight:700;color:#a1bac9;margin:12px 0 7px}
+.bg-day{position:relative;aspect-ratio:1;background:#223547;border:1px solid #354b60;border-radius:10px;color:#e5f5f6;font-size:.88rem;min-width:0;cursor:pointer}
+.bg-day.trained{background:#246d59;border-color:#7dedc3;font-weight:800;color:#fff}
+.bg-day.today{outline:1px dashed #f3cc74;outline-offset:1px}
+.bg-day.selected{box-shadow:inset 0 0 0 2px #fff0a5}
+.bg-day b{position:absolute;bottom:0;right:2px;color:#9dfbd0;font-size:.65rem}
+.bg-calendar-detail{margin:12px 0 0;background:#284257;padding:10px;border-radius:10px;font-size:.84rem;line-height:1.4}
+.bg-preview{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:5px;margin:13px 0}
+.bg-preview img{width:100%;max-width:100%;display:block}
+.bg-locked{filter:grayscale(1);opacity:.35}
+.bg-badges{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+.bg-badge{background:#273c50;border:1px solid #426174;border-radius:13px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;padding:11px 5px;font-size:.75rem}
+.bg-badge span{font-size:1.8rem}.bg-badge small{color:#bfe9d8;font-size:.67rem}
+.bg-badge.locked{filter:grayscale(1);opacity:.48}
+.bg-sticker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:12px 0}
+.bg-sticker{border:1px solid #40586d;border-radius:15px;background:#23394d;padding:12px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.bg-sticker img{width:112px;max-width:100%;height:112px;object-fit:contain}
+.bg-sticker b{font-size:.84rem}.bg-sticker small{font-size:.72rem;line-height:1.3;color:#b9d0dd}
+.bg-sticker.locked{opacity:.65}.bg-sticker.locked img{filter:grayscale(1);opacity:.25}
+.bg-sticker button{background:#235d51;color:#d6fff0;border:1px solid #4da384;border-radius:9px;padding:9px;font-size:.74rem;cursor:pointer;min-height:40px;width:100%;margin-top:auto}
+.bg-progress{height:8px;background:#364b5b;border-radius:100px;overflow:hidden;margin:10px 0}
+.bg-progress span{height:100%;display:block;background:linear-gradient(90deg,#59e6ac,#e4cc71)}
+.bg-danger{border-color:#ac666a;background:#372733}
+.bg-danger .bg-danger-btn{border:1px solid #f297a0;background:#8f343f;color:white;border-radius:10px;padding:11px 15px;font-weight:700;width:100%;cursor:pointer}
+.bg-dialog{border:1px solid #678296;border-radius:18px;padding:20px;background:#152b40;color:#f1f7fb;width:min(90vw,430px);max-width:430px}
+.bg-dialog::backdrop{background:rgba(0,0,0,.8)}
+.bg-dialog h2{margin:0 0 10px}.bg-dialog p{line-height:1.5}
+.bg-dialog button{padding:11px;border-radius:9px;border:1px solid #7892a4;background:#274358;color:white;cursor:pointer}
+.bg-dialog button.danger{background:#943846;border-color:#d47884}
+.bg-dialog button:disabled{opacity:.4;cursor:not-allowed}
+.bg-dialog input{box-sizing:border-box;background:#28455b;border:1px solid #829aaa;color:white;padding:12px;border-radius:9px;width:100%;font-size:1rem}
+.bg-dialog-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:15px}.bg-dialog-actions button{flex:1}
+.bg-summary-coach{display:flex;gap:10px;align-items:center}.bg-summary-coach img{width:76px}
+@media(min-width:620px){.bg-sticker-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(max-width:355px){.bg-box{padding:12px}.bg-coach img{height:83px;width:80px;flex-basis:80px}.bg-badges{grid-template-columns:repeat(2,minmax(0,1fr))}}
