@@ -112,3 +112,23 @@
 .bg-sticker .kiro-sticker{display:block;width:112px;height:112px;max-width:100%;margin-inline:auto}
 .bg-calendar-control{margin:14px 0 8px}
 .bg-calendar-control .btn{width:100%}
+
+/* Bitácora Gym 0.4.4 — Mini Coach interactivo y vista de Inicio despejada */
+.kiro-trigger{
+  appearance:none;-webkit-appearance:none;color:inherit;
+  cursor:pointer;text-align:center;font:inherit;
+  transition:transform .16s ease, box-shadow .16s ease;
+}
+.kiro-trigger:hover{transform:translateY(-2px)}
+.kiro-trigger:active{transform:scale(.97)}
+.kiro-trigger:focus-visible{outline:3px solid #9ef2d5;outline-offset:3px}
+.kiro-speech{
+  background:rgba(7,21,34,.58);
+  border:1px solid rgba(120,221,203,.32);
+  border-radius:14px;
+  padding:10px 12px;
+  min-height:3em;
+  margin:8px 0 5px!important;
+  line-height:1.45;
+}
+.kiro-tap-hint{display:block;font-size:.72rem;color:#a1c8d2;margin-top:6px}
