@@ -106,3 +106,9 @@
   .kiro-feature-image{flex-basis:83px;width:83px;height:83px}
   .kiro-feature .kiro-figure{width:80px;height:80px}
 }
+
+/* Bitácora Gym 0.4.3: KIRO en primer sticker y calendario desplegable */
+.bg-preview .kiro-sticker{width:100%;height:auto;aspect-ratio:1;max-width:100%}
+.bg-sticker .kiro-sticker{display:block;width:112px;height:112px;max-width:100%;margin-inline:auto}
+.bg-calendar-control{margin:14px 0 8px}
+.bg-calendar-control .btn{width:100%}

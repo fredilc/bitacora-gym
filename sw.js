@@ -1,5 +1,5 @@
 /* Bitácora Gym 0.4.1 — arranque offline-first y recuperación de red. */
-const CACHE='bitacora-gym-v042-kiro';
+const CACHE='bitacora-gym-v043-kiro-calendar';
 const CORE=[
   './','./index.html','./styles.css','./extras.css','./catalog.js','./app.js',
   './extras.js','./kiro/poses.webp','./manifest.webmanifest','./icon.svg','./icon-192.png','./icon-512.png',
